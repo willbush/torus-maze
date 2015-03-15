@@ -18,11 +18,6 @@ public class unionTest {
         System.setOut(new PrintStream(out));
     }
 
-    @After
-    public void cleanUpOutStream() {
-        System.setOut(null);
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void negativeSizeThrowsException() {
         UnionFind.make(-1);
@@ -39,11 +34,28 @@ public class unionTest {
     }
 
     @Test
-    public void canFindNumber() {
+    public void simpleFindTest() {
         assertEquals(2, u.find(2));
         assertEquals(3, u.find(3));
-        u.union(3, 1);
-        assertEquals(3, u.find(1));
+    }
+
+    @Test
+    public void testUnion() {
+        testUnion(7, 6, "-1 -1 -1 -1 -1 -1 7 -2 -1 -1 \n");
+        testUnion(3, 1, "-1 3 -1 -2 -1 -1 7 -2 -1 -1 \n");
+        testUnion(0, 2, "-2 3 0 -2 -1 -1 7 -2 -1 -1 \n");
+        testUnion(0, 2, "-2 3 0 -2 -1 -1 7 -2 -1 -1 \n"); // union same thing should do nothing
+        testUnion(1, 4, "-2 3 0 -3 1 -1 7 -2 -1 -1 \n");
+        testUnion(5, 6, "-2 3 0 -3 1 6 7 -3 -1 -1 \n");
+        testUnion(8, 9, "-2 3 0 -3 1 6 7 -3 -2 8 \n");
+        testUnion(2, 3, "-2 3 3 -5 1 6 7 -3 -2 8 \n");
+    }
+
+    private void testUnion(int x, int y, String expected) {
+        u.union(x, y);
+        u.printSets();
+        assertEquals(expected, out.toString());
+        out.reset();
     }
 
     @Test
