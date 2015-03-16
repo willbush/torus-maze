@@ -30,20 +30,22 @@ class UnionFind {
 
         int xRoot = find(x);
         int yRoot = find(y);
-        int xTreeSize = -sets[xRoot]; // flip sign to positive
-        int yTreeSize = -sets[yRoot];
 
-        if (yTreeSize <= xTreeSize)
+        if (getTotalVertices(yRoot) <= getTotalVertices(xRoot))
             connectRoots(yRoot, xRoot);
         else
             connectRoots(xRoot, yRoot);
     }
 
+    private int getTotalVertices(int root) {
+        return -sets[root];
+    }
+
     public int find(int element) {
-        int root = element;
-        while (sets[root] >= 0)
-            root = sets[root];
-        return root;
+        if (sets[element] < 0)
+            return element;
+
+        return sets[element] = find(sets[element]);
     }
 
     private void connectRoots(int childRoot, int parentRoot) {

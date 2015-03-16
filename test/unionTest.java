@@ -48,6 +48,13 @@ public class unionTest {
         assertEquals(7, u.find(5));
         assertEquals(7, u.find(9));
         assertEquals(3, u.find(0));
+
+        u.union(1, 9);
+        assertEquals(3, u.find(8));
+        assertEquals(3, u.find(9));
+        assertEquals(3, u.find(7));
+        u.printSets();
+        assertEquals("3 3 3 -10 3 7 7 3 3 3 \n", out.toString());
     }
 
     private void testUnion(int x, int y, String expected) {
