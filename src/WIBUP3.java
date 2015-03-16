@@ -1,4 +1,10 @@
 class UnionFind {
+    /*
+    The union data structure is implemented by an array. Positive numbers are directed edges
+    whose value points to the parent vertex key value. Note that the key values are the same
+    as the index of the vertex. Negative numbers represent root vertices and the absolute value
+    of that negative number represents the number of vertices connected to that root through unions.
+     */
     private int[] sets;
 
     public static UnionFind make(int size) {
@@ -22,37 +28,29 @@ class UnionFind {
     public void union(int x, int y) {
         if (x == y) return; // nothing to union
 
-        if (isOutOfBounds(x, y))
-            throw new IndexOutOfBoundsException("the x or y in union(x, y) is out of bounds");
-
         int xRoot = find(x);
         int yRoot = find(y);
-        int xTreeSize = Math.abs(sets[xRoot]);
-        int yTreeSize = Math.abs(sets[yRoot]);
+        int xTreeSize = -sets[xRoot]; // flip sign to positive
+        int yTreeSize = -sets[yRoot];
 
         if (yTreeSize <= xTreeSize)
-            directChildToParent(y, x, yRoot, xRoot);
+            connectRoots(yRoot, xRoot);
         else
-            directChildToParent(x, y, xRoot, yRoot);
-    }
-
-    private void directChildToParent(int child, int parent, int childRoot, int parentRoot) {
-        if (sets[child] != parent) {
-            sets[parentRoot] += sets[childRoot];
-            sets[child] = parent;
-        }
+            connectRoots(xRoot, yRoot);
     }
 
     public int find(int element) {
         int root = element;
-        while (sets[root] >= 0) {
+        while (sets[root] >= 0)
             root = sets[root];
-        }
         return root;
     }
 
-    private boolean isOutOfBounds(int x, int y) {
-        return x > sets.length - 1 || y > sets.length - 1;
+    private void connectRoots(int childRoot, int parentRoot) {
+        if (childRoot != parentRoot) {
+            sets[parentRoot] += sets[childRoot];
+            sets[childRoot] = parentRoot;
+        }
     }
 
     public void printSets() {
