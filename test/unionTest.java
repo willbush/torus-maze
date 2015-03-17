@@ -12,13 +12,13 @@ public class unionTest {
 
     @Before
     public void arrange() {
-        u = UnionFind.make(10);
+        u = UnionFind.makeSets(10);
         System.setOut(new PrintStream(out));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalidSizeThrowsException() {
-        UnionFind.make(-1);
+        UnionFind.makeSets(-1);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class unionTest {
     }
 
     @Test
-    public void testComplexTree() {
+    public void TestComplexSets() {
         testUnion(0, 0, "-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 \n"); // union same vertex does nothing
         testUnion(7, 6, "-1 -1 -1 -1 -1 -1 7 -2 -1 -1 \n");
         testUnion(3, 1, "-1 3 -1 -2 -1 -1 7 -2 -1 -1 \n");
@@ -55,6 +55,7 @@ public class unionTest {
         assertEquals(3, u.find(7));
         u.printSets();
         assertEquals("3 3 3 -10 3 7 7 3 3 3 \n", out.toString());
+        assertEquals(1, u.getSetsRemaining());
     }
 
     private void testUnion(int x, int y, String expected) {
