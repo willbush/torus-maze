@@ -28,7 +28,7 @@ public class unionTest {
     }
 
     @Test
-    public void TestComplexSets() {
+    public void testComplexSets() {
         testUnion(0, 0, "-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 \n"); // union same vertex does nothing
         testUnion(7, 6, "-1 -1 -1 -1 -1 -1 7 -2 -1 -1 \n");
         testUnion(3, 1, "-1 3 -1 -2 -1 -1 7 -2 -1 -1 \n");
@@ -56,6 +56,40 @@ public class unionTest {
         u.printSets();
         assertEquals("3 3 3 -10 3 7 7 3 3 3 \n", out.toString());
         assertEquals(1, u.getSetsRemaining());
+
+        out.reset();
+        u.printStats();
+        String expected = "Number of sets remaining =    1\n" +
+                "Mean path length in find =   1.68\n";
+        assertEquals(expected, out.toString());
+    }
+
+    @Test
+    public void testComplexSets2() {
+        u.union(1, 2);
+        u.union(3, 4);
+        u.union(5, 6);
+        u.union(7, 8);
+        u.union(2, 8);
+        u.union(6, 1);
+        u.printSets();
+        assertEquals("-1 -6 1 -2 3 1 5 1 7 -1 \n", out.toString());
+        u.find(3);
+        u.find(6);
+        u.find(8);
+        u.find(2);
+        u.find(1);
+        u.find(6);
+        u.find(8);
+        out.reset();
+        u.printSets();
+        assertEquals("-1 -6 1 -2 3 1 1 1 1 -1 \n", out.toString());
+
+        out.reset();
+        u.printStats();
+        String expected = "Number of sets remaining =    4\n" +
+                "Mean path length in find =   1.53\n";
+        assertEquals(expected, out.toString());
     }
 
     private void testUnion(int x, int y, String expected) {

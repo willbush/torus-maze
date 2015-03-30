@@ -6,7 +6,10 @@ class UnionFind {
     of that negative number represents the number of vertices connected to that root through unions.
      */
     private int[] sets;
+
     private int setsRemaining;
+    private int totalPathLength;
+    private int totalCallsToFind;
 
     public static UnionFind makeSets(int size) {
         if (size > 0)
@@ -18,7 +21,8 @@ class UnionFind {
     private UnionFind(int size) {
         sets = new int[size];
         setsRemaining = size;
-
+        totalPathLength = 0;
+        totalCallsToFind = 0;
         initializeSets();
     }
 
@@ -44,10 +48,23 @@ class UnionFind {
     }
 
     public int find(int element) {
+        totalPathLength++;
+        totalCallsToFind++;
+
+        int current = element;
+        while (sets[current] >= 0) {
+            current = sets[current];
+            totalPathLength++;
+        }
+        pathCompress(element);
+        return current;
+    }
+
+    private int pathCompress(int element) {
         if (sets[element] < 0)
             return element;
 
-        return sets[element] = find(sets[element]);
+        return sets[element] = pathCompress(sets[element]);
     }
 
     private void connectRoots(int childRoot, int parentRoot) {
@@ -65,7 +82,7 @@ class UnionFind {
     }
 
     public void printStats() {
-        double meanPathLength = 0; // not yet implemented
+        double meanPathLength = (double) totalPathLength / totalCallsToFind;
 
         System.out.printf("Number of sets remaining = %4d\n", setsRemaining);
         System.out.printf("Mean path length in find = %6.2f\n", meanPathLength);
