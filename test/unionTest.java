@@ -12,13 +12,13 @@ public class unionTest {
 
     @Before
     public void arrange() {
-        u = UnionFind.makeSets(10);
+        u = new UnionFind(10);
         System.setOut(new PrintStream(out));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalidSizeThrowsException() {
-        UnionFind.makeSets(-1);
+        new UnionFind(-1);
     }
 
     @Test
