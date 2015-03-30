@@ -47,24 +47,27 @@ class UnionFind {
         return -sets[root];
     }
 
+    /**
+     * @return root vertex
+     */
     public int find(int element) {
         totalPathLength++;
         totalCallsToFind++;
 
-        int current = element;
-        while (sets[current] >= 0) {
-            current = sets[current];
-            totalPathLength++;
-        }
-        pathCompress(element);
-        return current;
+        return recursiveFind(element);
     }
 
-    private int pathCompress(int element) {
+    /**
+     * finds root and performs path compression in the process
+     *
+     * @return root vertex
+     */
+    private int recursiveFind(int element) {
         if (sets[element] < 0)
             return element;
 
-        return sets[element] = pathCompress(sets[element]);
+        totalPathLength++;
+        return sets[element] = recursiveFind(sets[element]);
     }
 
     private void connectRoots(int childRoot, int parentRoot) {
