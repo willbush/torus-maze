@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 class UnionFind {
     /*
-    The u data structure is implemented by an array. Positive numbers are directed edges
+    The union data structure is implemented by an array. Positive numbers are directed edges
     whose value points to the parent vertex key value. Note that the key values are the same
     as the index of the vertex. Negative numbers represent root vertices and the absolute value
     of that negative number represents the number of vertices connected to that root through unions.
@@ -42,10 +42,6 @@ class UnionFind {
             connectRoots(xRoot, yRoot);
     }
 
-    private int getTotalVertices(int root) {
-        return -sets[root];
-    }
-
     /**
      * @return root vertex
      */
@@ -69,12 +65,22 @@ class UnionFind {
             sets[parentRoot] += sets[childRoot];
             sets[childRoot] = parentRoot;
             setsRemaining--;
+            printRootAndSize(parentRoot);
         }
+    }
+
+    private void printRootAndSize(int root) {
+        System.out.println(root + " " + getTotalVertices(root));
+    }
+
+    private int getTotalVertices(int root) {
+        return -sets[root];
     }
 
     public void printSets() {
         for (int value : sets)
             System.out.print(value + " ");
+
         System.out.println();
     }
 
@@ -91,7 +97,7 @@ class UnionFind {
 }
 
 class TorusMaze {
-    private int[][] adjacencyMatrix; // to keep track of edges
+    private int[][] adjacencyMatrix; // to keep track of undirected edges
     private UnionFind u;
     private final int numOfNodes;
     private final int powerOf2;
@@ -138,10 +144,6 @@ class TorusMaze {
                 addEdge(randomNode, neighbor);
             }
         }
-    }
-
-    private boolean isMemberOfSameSet(int randomNode, int neighbor) {
-        return u.find(randomNode) == u.find(neighbor);
     }
 
     private int getLegalNeighbor(int node, Direction direction) {
@@ -227,6 +229,10 @@ class TorusMaze {
         return node - (powerOf2 - 1);
     }
 
+    private boolean isMemberOfSameSet(int randomNode, int neighbor) {
+        return u.find(randomNode) == u.find(neighbor);
+    }
+
     private void addEdge(int x, int y) {
         Random r = new Random();
         int weight = r.nextInt(maxWeight) + 1; // on interval [1, maxWeight]
@@ -310,8 +316,8 @@ class TorusMaze {
         u.printSets();
     }
 
-    public void find(int element) {
-        u.find(element);
+    public int find(int element) {
+        return u.find(element);
     }
 
     public void union(int x, int y) {
@@ -372,6 +378,10 @@ public class WIBUP3 {
         }
     }
 
+    private boolean inputHasNext(String command) {
+        return !command.equals("e");
+    }
+
     private void union(String[] tokens) {
         int x = Integer.valueOf(tokens[1]);
         int y = Integer.valueOf(tokens[2]);
@@ -385,9 +395,9 @@ public class WIBUP3 {
     private void find(String[] tokens) {
         Integer x = Integer.valueOf(tokens[1]);
         if (mazeCreated)
-            m.find(x);
+            System.out.println(m.find(x));
         else
-            u.find(x);
+            System.out.println(u.find(x));
     }
 
     private void printSets() {
@@ -402,10 +412,6 @@ public class WIBUP3 {
             m.printStats();
         else
             u.printStats();
-    }
-
-    private boolean inputHasNext(String command) {
-        return !command.equals("e");
     }
 
     private void createMazeAndPrintData(String[] tokens) {

@@ -53,6 +53,7 @@ public class unionTest {
         assertEquals(3, u.find(8));
         assertEquals(3, u.find(9));
         assertEquals(3, u.find(7));
+        out.reset();
         u.printSets();
         assertEquals("3 3 3 -10 3 7 7 3 3 3 \n", out.toString());
         assertEquals(1, u.getSetsRemaining());
@@ -72,6 +73,7 @@ public class unionTest {
         u.union(7, 8);
         u.union(2, 8);
         u.union(6, 1);
+        out.reset();
         u.printSets();
         assertEquals("-1 -6 1 -2 3 1 5 1 7 -1 \n", out.toString());
         u.find(3);
@@ -94,6 +96,7 @@ public class unionTest {
 
     private void testUnion(int x, int y, String expected) {
         u.union(x, y);
+        out.reset();
         u.printSets();
         assertEquals(expected, out.toString());
         out.reset();
