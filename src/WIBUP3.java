@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Random;
 
 class UnionFind {
@@ -53,20 +52,15 @@ class UnionFind {
         totalPathLength++;
         totalCallsToFind++;
 
-        return recursiveFind(element);
+        return findAndPathCompress(element);
     }
 
-    /**
-     * finds root and performs path compression in the process
-     *
-     * @return root vertex
-     */
-    private int recursiveFind(int element) {
+    private int findAndPathCompress(int element) {
         if (sets[element] < 0)
             return element;
 
         totalPathLength++;
-        return sets[element] = recursiveFind(sets[element]);
+        return sets[element] = findAndPathCompress(sets[element]);
     }
 
     private void connectRoots(int childRoot, int parentRoot) {
@@ -121,10 +115,10 @@ class TorusMaze {
         return power > 0 && power < 7;
     }
 
-    private enum Neighbor {
-        ABOVE, BELOW, LEFT, RIGHT;
+    private enum Direction {
+        UP, DOWN, LEFT, RIGHT;
 
-        private static Neighbor getRandom() {
+        private static Direction getRandom() {
             return values()[(int) (Math.random() * values().length)];
         }
     }
@@ -134,28 +128,29 @@ class TorusMaze {
 
         while (u.getSetsRemaining() > 1) {
             // random int on interval [0, numOfNodes)
-            int node = r.nextInt(numOfNodes);
-            int neighbor = getLegalNeighbor(node, Neighbor.getRandom());
+            int randomNode = r.nextInt(numOfNodes);
+            int neighbor = getLegalNeighbor(randomNode, Direction.getRandom());
 
-            int nodeRoot = u.find(node);
-            int neighborRoot = u.find(neighbor);
-
-            if (nodeRoot != neighborRoot) {
-                u.union(nodeRoot, neighborRoot);
-                addEdge(nodeRoot, neighborRoot);
+            if (!isMemberOfSameSet(randomNode, neighbor)) {
+                u.union(randomNode, neighbor);
+                addEdge(randomNode, neighbor);
             }
         }
     }
 
-    private int getLegalNeighbor(int node, Neighbor neighbor) {
+    private boolean isMemberOfSameSet(int randomNode, int neighbor) {
+        return u.find(randomNode) == u.find(neighbor);
+    }
+
+    private int getLegalNeighbor(int node, Direction direction) {
         int legalNeighbor = -1;
 
-        switch (neighbor) {
-            case ABOVE:
+        switch (direction) {
+            case UP:
                 legalNeighbor = getAbove(node);
                 break;
 
-            case BELOW:
+            case DOWN:
                 legalNeighbor = getBelow(node);
                 break;
 
@@ -170,32 +165,64 @@ class TorusMaze {
         return legalNeighbor;
     }
 
-    private int getRight(int node) {
-        if (((node + 1) % powerOf2) == 0)
-            return node - (powerOf2 - 1);
+    private int getAbove(int node) {
+        if (isOnTopEdge(node))
+            return getOppositeOfTopEdge(node);
         else
-            return node + 1;
+            return node - powerOf2;
     }
 
-    private int getLeft(int node) {
-        if ((node % powerOf2) == 0)
-            return node + powerOf2 - 1;
-        else
-            return node - 1;
+    private boolean isOnTopEdge(int node) {
+        return (node - powerOf2) < 0;
+    }
+
+    private int getOppositeOfTopEdge(int node) {
+        return node + numOfNodes - powerOf2;
     }
 
     private int getBelow(int node) {
-        if ((node + powerOf2) > (numOfNodes - 1))
-            return node - (numOfNodes - powerOf2);
+        if (isOnBottomEdge(node))
+            return getOppositeOfBottomEdge(node);
         else
             return node + powerOf2;
     }
 
-    private int getAbove(int node) {
-        if ((node - powerOf2) < 0)
-            return node + numOfNodes - powerOf2;
+    private boolean isOnBottomEdge(int node) {
+        return (node + powerOf2) > (numOfNodes - 1);
+    }
+
+    private int getOppositeOfBottomEdge(int node) {
+        return node - (numOfNodes - powerOf2);
+    }
+
+    private int getLeft(int node) {
+        if (isOnLeftEdge(node))
+            return getOppositeOfLeftEdge(node);
         else
-            return node - powerOf2;
+            return node - 1;
+    }
+
+    private boolean isOnLeftEdge(int node) {
+        return (node % powerOf2) == 0;
+    }
+
+    private int getOppositeOfLeftEdge(int node) {
+        return node + powerOf2 - 1;
+    }
+
+    private int getRight(int node) {
+        if (isOnRightEdge(node))
+            return getOppositeOfRightEdge(node);
+        else
+            return node + 1;
+    }
+
+    private boolean isOnRightEdge(int node) {
+        return ((node + 1) % powerOf2) == 0;
+    }
+
+    private int getOppositeOfRightEdge(int node) {
+        return node - (powerOf2 - 1);
     }
 
     private void addEdge(int x, int y) {
@@ -208,33 +235,69 @@ class TorusMaze {
             adjacencyMatrix[y][x] = weight;
     }
 
+    /**
+     * Note col = row in inner loop causes only the upper right half of
+     * the matrix to be looped over (since only that data is used for undirected edges).
+     */
     public void printMazeData() {
-        // the number of neighbor nodes with a higher key value than the current node.
-        int[][] neighbors = new int[numOfNodes][3]; // at most 3 neighbors with higher key values
-        int higherKeyNeighbors = 0;
-        int currentWeight = 0;
+        int maxNeighborsWithHigherKey = 3;
+        int[] neighborsWithHigherKey = new int[maxNeighborsWithHigherKey];
+        int[] neighborWeights = new int[maxNeighborsWithHigherKey];
 
+        int numHigherKeyNeighbors = 0;
         for (int row = 0; row < numOfNodes; row++) {
-            for (int col = 0; col < numOfNodes; col++) {
+            for (int col = row; col < numOfNodes; col++) {
                 if (adjacencyMatrix[row][col] > 0) {
-                    neighbors[row][higherKeyNeighbors] = col;
-                    currentWeight = adjacencyMatrix[row][col];
-                    higherKeyNeighbors++;
+                    neighborsWithHigherKey[numHigherKeyNeighbors] = col;
+                    neighborWeights[numHigherKeyNeighbors] = adjacencyMatrix[row][col];
+                    numHigherKeyNeighbors++;
                 }
-                System.out.println(higherKeyNeighbors + " ");
-                higherKeyNeighbors = 0;
             }
+            printRow(numHigherKeyNeighbors, neighborsWithHigherKey, neighborWeights);
+
+            numHigherKeyNeighbors = 0;
         }
     }
 
+    private void printRow(int numHigherKeyNeighbors, int[] neighbors, int[] weights) {
+        if (numHigherKeyNeighbors > 0) {
+            StringBuilder neighborString = new StringBuilder();
+            StringBuilder weightString = new StringBuilder();
+
+            neighborString.append(numHigherKeyNeighbors);
+            for (int i = 0; i < neighbors.length; i++) {
+                if (neighbors[i] > 0) {
+                    neighborString.append(" ");
+                    neighborString.append(neighbors[i]);
+                    weightString.append(" ");
+                    weightString.append(weights[i]);
+                }
+            }
+            String outputString = neighborString.toString() + weightString.toString();
+            System.out.println(outputString);
+
+        } else
+            System.out.println(0);
+    }
+
+    /**
+     * prints upper right half of the matrix
+     * since the lower left half is not used.
+     */
     public void printRawMazeData() {
         for (int row = 0; row < numOfNodes; row++) {
-            for (int col = 0; col < numOfNodes; col++) {
+            alignLeft(row);
+            for (int col = row; col < numOfNodes; col++) {
                 System.out.print(adjacencyMatrix[row][col]);
-                System.out.print("\t");
+                System.out.print(" ");
             }
             System.out.println();
         }
+    }
+
+    private void alignLeft(int multiple) {
+        for (int i = multiple; i > 0; i--)
+            System.out.print("  ");
     }
 }
 

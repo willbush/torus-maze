@@ -1,7 +1,4 @@
-import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class mazeTest {
 
@@ -14,6 +11,7 @@ public class mazeTest {
     public void testMazeData() {
         System.setOut(System.out);
         TorusMaze m = new TorusMaze(2, 2);
+        m.printMazeData();
         m.printRawMazeData();
     }
 }
