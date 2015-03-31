@@ -12,14 +12,14 @@ class UnionFind {
     private int setsRemaining;
     private int totalPathLength;
     private int totalCallsToFind;
+    private int rootOfLastUnion;
 
 
     public UnionFind(int size) {
         if (size > 0) {
+            totalPathLength = totalCallsToFind = rootOfLastUnion = 0;
             sets = new int[size];
             setsRemaining = size;
-            totalPathLength = 0;
-            totalCallsToFind = 0;
             initializeSets();
         } else
             throw new IllegalArgumentException("size must be greater than zero");
@@ -65,12 +65,12 @@ class UnionFind {
             sets[parentRoot] += sets[childRoot];
             sets[childRoot] = parentRoot;
             setsRemaining--;
-            printRootAndSize(parentRoot);
+            rootOfLastUnion = parentRoot;
         }
     }
 
-    private void printRootAndSize(int root) {
-        System.out.println(root + " " + getTotalVertices(root));
+    public void printRootAndSizeOfLastUnion() {
+        System.out.println(rootOfLastUnion + " " + getTotalVertices(rootOfLastUnion));
     }
 
     private int getTotalVertices(int root) {
@@ -308,20 +308,8 @@ class TorusMaze {
             System.out.print("  ");
     }
 
-    public void printStats() {
-        u.printStats();
-    }
-
-    public void printSets() {
-        u.printSets();
-    }
-
-    public int find(int element) {
-        return u.find(element);
-    }
-
-    public void union(int x, int y) {
-        u.union(x, y);
+    public UnionFind getUnionFindStructure() {
+        return u;
     }
 }
 
@@ -349,7 +337,7 @@ public class WIBUP3 {
     private void performCommands(String[] tokens) {
         switch (tokens[0]) {
             case "n":
-                System.out.println("William Bush");
+                System.out.println("WIBUP3.java");
                 break;
 
             case "d":
@@ -386,30 +374,35 @@ public class WIBUP3 {
         int x = Integer.valueOf(tokens[1]);
         int y = Integer.valueOf(tokens[2]);
 
-        if (mazeCreated)
-            m.union(x, y);
-        else
+        if (mazeCreated) {
+            UnionFind uf = m.getUnionFindStructure();
+            uf.union(x, y);
+            uf.printRootAndSizeOfLastUnion();
+        } else {
             u.union(x, y);
+            u.printRootAndSizeOfLastUnion();
+        }
     }
 
     private void find(String[] tokens) {
         Integer x = Integer.valueOf(tokens[1]);
-        if (mazeCreated)
-            System.out.println(m.find(x));
-        else
+        if (mazeCreated) {
+            UnionFind uf = m.getUnionFindStructure();
+            System.out.println(uf.find(x));
+        } else
             System.out.println(u.find(x));
     }
 
     private void printSets() {
         if (mazeCreated)
-            m.printSets();
+            m.getUnionFindStructure().printSets();
         else
             u.printSets();
     }
 
     private void printStats() {
         if (mazeCreated)
-            m.printStats();
+            m.getUnionFindStructure().printStats();
         else
             u.printStats();
     }
