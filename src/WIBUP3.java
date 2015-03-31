@@ -240,12 +240,16 @@ class TorusMaze {
      * the matrix to be looped over (since only that data is used for undirected edges).
      */
     public void printMazeData() {
-        int maxNeighborsWithHigherKey = 3;
-        int[] neighborsWithHigherKey = new int[maxNeighborsWithHigherKey];
-        int[] neighborWeights = new int[maxNeighborsWithHigherKey];
+        final int maxNeighborsWithHigherKey = 3;
+        int[] neighborsWithHigherKey;
+        int[] neighborWeights;
 
-        int numHigherKeyNeighbors = 0;
+        int numHigherKeyNeighbors;
         for (int row = 0; row < numOfNodes; row++) {
+            numHigherKeyNeighbors = 0;
+            neighborsWithHigherKey = new int[maxNeighborsWithHigherKey];
+            neighborWeights = new int[maxNeighborsWithHigherKey];
+
             for (int col = row; col < numOfNodes; col++) {
                 if (adjacencyMatrix[row][col] > 0) {
                     neighborsWithHigherKey[numHigherKeyNeighbors] = col;
@@ -254,8 +258,6 @@ class TorusMaze {
                 }
             }
             printRow(numHigherKeyNeighbors, neighborsWithHigherKey, neighborWeights);
-
-            numHigherKeyNeighbors = 0;
         }
     }
 
