@@ -29,11 +29,11 @@ public class unionTest {
 
     @Test
     public void testComplexSets() {
-        testUnion(0, 0, "-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 \n"); // union same vertex does nothing
+        testUnion(0, 0, "-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 \n"); // u same vertex does nothing
         testUnion(7, 6, "-1 -1 -1 -1 -1 -1 7 -2 -1 -1 \n");
         testUnion(3, 1, "-1 3 -1 -2 -1 -1 7 -2 -1 -1 \n");
         testUnion(0, 2, "-2 3 0 -2 -1 -1 7 -2 -1 -1 \n");
-        testUnion(0, 2, "-2 3 0 -2 -1 -1 7 -2 -1 -1 \n"); // double union same vertices does nothing
+        testUnion(0, 2, "-2 3 0 -2 -1 -1 7 -2 -1 -1 \n"); // double u same vertices does nothing
         testUnion(1, 4, "-2 3 0 -3 3 -1 7 -2 -1 -1 \n");
         testUnion(5, 6, "-2 3 0 -3 3 7 7 -3 -1 -1 \n");
         testUnion(8, 9, "-2 3 0 -3 3 7 7 -3 -2 8 \n");

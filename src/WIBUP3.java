@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 class UnionFind {
     /*
-    The union data structure is implemented by an array. Positive numbers are directed edges
+    The u data structure is implemented by an array. Positive numbers are directed edges
     whose value points to the parent vertex key value. Note that the key values are the same
     as the index of the vertex. Negative numbers represent root vertices and the absolute value
     of that negative number represents the number of vertices connected to that root through unions.
@@ -31,7 +31,7 @@ class UnionFind {
     }
 
     public void union(int x, int y) {
-        if (x == y) return; // nothing to union
+        if (x == y) return; // nothing to u
 
         int xRoot = find(x);
         int yRoot = find(y);
@@ -115,6 +115,7 @@ class TorusMaze {
     private boolean isInRange(int power) {
         return power > 0 && power < 7;
     }
+
 
     private enum Direction {
         UP, DOWN, LEFT, RIGHT;
@@ -300,13 +301,33 @@ class TorusMaze {
         for (int i = row; i > 0; i--)
             System.out.print("  ");
     }
+
+    public void printStats() {
+        u.printStats();
+    }
+
+    public void printSets() {
+        u.printSets();
+    }
+
+    public void find(int element) {
+        u.find(element);
+    }
+
+    public void union(int x, int y) {
+        u.union(x, y);
+    }
 }
 
 public class WIBUP3 {
     private Scanner input;
+    private UnionFind u;
+    private TorusMaze m;
+    private boolean mazeCreated;
 
     WIBUP3(java.io.InputStream in) {
         input = new Scanner(in);
+        mazeCreated = false;
     }
 
     public void run() {
@@ -322,30 +343,77 @@ public class WIBUP3 {
     private void performCommands(String[] tokens) {
         switch (tokens[0]) {
             case "n":
+                System.out.println("William Bush");
                 break;
 
             case "d":
+                u = new UnionFind(Integer.valueOf(tokens[1]));
                 break;
 
             case "u":
+                union(tokens);
                 break;
 
             case "f":
+                find(tokens);
                 break;
 
             case "p":
+                printSets();
                 break;
 
             case "s":
+                printStats();
                 break;
 
             case "m":
+                createMazeAndPrintData(tokens);
                 break;
         }
     }
 
+    private void union(String[] tokens) {
+        int x = Integer.valueOf(tokens[1]);
+        int y = Integer.valueOf(tokens[2]);
+
+        if (mazeCreated)
+            m.union(x, y);
+        else
+            u.union(x, y);
+    }
+
+    private void find(String[] tokens) {
+        Integer x = Integer.valueOf(tokens[1]);
+        if (mazeCreated)
+            m.find(x);
+        else
+            u.find(x);
+    }
+
+    private void printSets() {
+        if (mazeCreated)
+            m.printSets();
+        else
+            u.printSets();
+    }
+
+    private void printStats() {
+        if (mazeCreated)
+            m.printStats();
+        else
+            u.printStats();
+    }
+
     private boolean inputHasNext(String command) {
-        return command.equals("e");
+        return !command.equals("e");
+    }
+
+    private void createMazeAndPrintData(String[] tokens) {
+        int power = Integer.valueOf(tokens[1]);
+        int maxWeight = Integer.valueOf(tokens[2]);
+        m = new TorusMaze(power, maxWeight);
+        m.printMazeData();
+        mazeCreated = true;
     }
 
     public static void main(String[] args) {
