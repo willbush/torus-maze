@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.Scanner;
 
 class UnionFind {
     /*
@@ -235,9 +236,11 @@ class TorusMaze {
             adjacencyMatrix[y][x] = weight;
     }
 
-    /**
-     * Note col = row in inner loop causes only the upper right half of
-     * the matrix to be looped over (since only that data is used for undirected edges).
+    /*
+      Note col = row + 1 in inner loop causes only the upper right half of
+      the matrix to be looped over (excluding the main diagonal)
+      since only that data is used for undirected edges.
+      If there are n nodes, then the loop will take n*n/2 - n interations.
      */
     public void printMazeData() {
         final int maxNeighborsWithHigherKey = 3;
@@ -250,7 +253,7 @@ class TorusMaze {
             neighborsWithHigherKey = new int[maxNeighborsWithHigherKey];
             neighborWeights = new int[maxNeighborsWithHigherKey];
 
-            for (int col = row; col < numOfNodes; col++) {
+            for (int col = row + 1; col < numOfNodes; col++) {
                 if (adjacencyMatrix[row][col] > 0) {
                     neighborsWithHigherKey[numHigherKeyNeighbors] = col;
                     neighborWeights[numHigherKeyNeighbors] = adjacencyMatrix[row][col];
@@ -282,14 +285,10 @@ class TorusMaze {
             System.out.println(0);
     }
 
-    /**
-     * prints upper right half of the matrix
-     * since the lower left half is not used.
-     */
     public void printRawMazeData() {
         for (int row = 0; row < numOfNodes; row++) {
             alignLeft(row);
-            for (int col = row; col < numOfNodes; col++) {
+            for (int col = row + 1; col < numOfNodes; col++) {
                 System.out.print(adjacencyMatrix[row][col]);
                 System.out.print(" ");
             }
@@ -297,12 +296,60 @@ class TorusMaze {
         }
     }
 
-    private void alignLeft(int multiple) {
-        for (int i = multiple; i > 0; i--)
+    private void alignLeft(int row) {
+        for (int i = row; i > 0; i--)
             System.out.print("  ");
     }
 }
 
 public class WIBUP3 {
+    private Scanner input;
 
+    WIBUP3(java.io.InputStream in) {
+        input = new Scanner(in);
+    }
+
+    public void run() {
+        String[] tokens;
+
+        do {
+            String line = input.nextLine();
+            tokens = line.split(" ");
+            performCommands(tokens);
+        } while (inputHasNext(tokens[0]));
+    }
+
+    private void performCommands(String[] tokens) {
+        switch (tokens[0]) {
+            case "n":
+                break;
+
+            case "d":
+                break;
+
+            case "u":
+                break;
+
+            case "f":
+                break;
+
+            case "p":
+                break;
+
+            case "s":
+                break;
+
+            case "m":
+                break;
+        }
+    }
+
+    private boolean inputHasNext(String command) {
+        return command.equals("e");
+    }
+
+    public static void main(String[] args) {
+        WIBUP3 program = new WIBUP3(System.in);
+        program.run();
+    }
 }

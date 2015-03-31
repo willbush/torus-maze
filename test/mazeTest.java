@@ -9,8 +9,7 @@ public class mazeTest {
 
     @Test
     public void testMazeData() {
-        System.setOut(System.out);
-        TorusMaze m = new TorusMaze(2, 2);
+        TorusMaze m = new TorusMaze(2, 1);
         m.printMazeData();
         m.printRawMazeData();
     }
