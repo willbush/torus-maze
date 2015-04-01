@@ -20,6 +20,6 @@ WIBUP3.java
 3
 3
 3
-3 3 3 -10 3 7 7 3 3 3
+3 3 3 -10 3 7 7 3 3 3 
 Number of sets remaining =    1
-Mean path length in find =   1.68 
+Mean path length in find =   1.68

@@ -31,12 +31,12 @@ class UnionFind {
     }
 
     public void union(int x, int y) {
-        if (x == y) return; // nothing to u
+        if (x == y) return; // nothing to union
 
         int xRoot = find(x);
         int yRoot = find(y);
 
-        if (getTotalVertices(yRoot) <= getTotalVertices(xRoot))
+        if (getTotalMembers(yRoot) <= getTotalMembers(xRoot))
             connectRoots(yRoot, xRoot);
         else
             connectRoots(xRoot, yRoot);
@@ -69,11 +69,11 @@ class UnionFind {
         }
     }
 
-    public void printRootAndSizeOfLastUnion() {
-        System.out.println(rootOfLastUnion + " " + getTotalVertices(rootOfLastUnion));
+    public void printLastUnionRootAndSize() {
+        System.out.println(rootOfLastUnion + " " + getTotalMembers(rootOfLastUnion));
     }
 
-    private int getTotalVertices(int root) {
+    private int getTotalMembers(int root) {
         return -sets[root];
     }
 
@@ -135,8 +135,7 @@ class TorusMaze {
         Random r = new Random();
 
         while (u.getSetsRemaining() > 1) {
-            // random int on interval [0, numOfNodes)
-            int randomNode = r.nextInt(numOfNodes);
+            int randomNode = r.nextInt(numOfNodes); // interval [0, numOfNodes)
             int neighbor = getLegalNeighbor(randomNode, Direction.getRandom());
 
             if (!isMemberOfSameSet(randomNode, neighbor)) {
@@ -229,8 +228,8 @@ class TorusMaze {
         return node - (powerOf2 - 1);
     }
 
-    private boolean isMemberOfSameSet(int randomNode, int neighbor) {
-        return u.find(randomNode) == u.find(neighbor);
+    private boolean isMemberOfSameSet(int x, int y) {
+        return u.find(x) == u.find(y);
     }
 
     private void addEdge(int x, int y) {
@@ -246,37 +245,37 @@ class TorusMaze {
     /*
       Note col = row + 1 in inner loop causes only the upper right half of
       the matrix to be looped over (excluding the main diagonal)
-      since only that data is used for undirected edges.
+      since only that data is used for undirected weighted edges.
       If there are n nodes, then the loop will take n*n/2 - n interations.
      */
     public void printMazeData() {
         final int maxNeighborsWithHigherKey = 3;
-        int[] neighborsWithHigherKey;
+        int[] higherKeyNeighbors;
         int[] neighborWeights;
 
-        int numHigherKeyNeighbors;
+        int neighborCount;
         for (int row = 0; row < numOfNodes; row++) {
-            numHigherKeyNeighbors = 0;
-            neighborsWithHigherKey = new int[maxNeighborsWithHigherKey];
+            neighborCount = 0;
+            higherKeyNeighbors = new int[maxNeighborsWithHigherKey];
             neighborWeights = new int[maxNeighborsWithHigherKey];
 
             for (int col = row + 1; col < numOfNodes; col++) {
                 if (adjacencyMatrix[row][col] > 0) {
-                    neighborsWithHigherKey[numHigherKeyNeighbors] = col;
-                    neighborWeights[numHigherKeyNeighbors] = adjacencyMatrix[row][col];
-                    numHigherKeyNeighbors++;
+                    higherKeyNeighbors[neighborCount] = col;
+                    neighborWeights[neighborCount] = adjacencyMatrix[row][col];
+                    neighborCount++;
                 }
             }
-            printRow(numHigherKeyNeighbors, neighborsWithHigherKey, neighborWeights);
+            printRow(neighborCount, higherKeyNeighbors, neighborWeights);
         }
     }
 
-    private void printRow(int numHigherKeyNeighbors, int[] neighbors, int[] weights) {
-        if (numHigherKeyNeighbors > 0) {
+    private void printRow(int neighborCount, int[] neighbors, int[] weights) {
+        if (neighborCount > 0) {
             StringBuilder neighborString = new StringBuilder();
             StringBuilder weightString = new StringBuilder();
 
-            neighborString.append(numHigherKeyNeighbors);
+            neighborString.append(neighborCount);
             for (int i = 0; i < neighbors.length; i++) {
                 if (neighbors[i] > 0) {
                     neighborString.append(" ");
@@ -308,7 +307,7 @@ class TorusMaze {
             System.out.print("  ");
     }
 
-    public UnionFind getUnionFindStructure() {
+    public UnionFind getUnionFind() {
         return u;
     }
 }
@@ -375,19 +374,19 @@ public class WIBUP3 {
         int y = Integer.valueOf(tokens[2]);
 
         if (mazeCreated) {
-            UnionFind uf = m.getUnionFindStructure();
+            UnionFind uf = m.getUnionFind();
             uf.union(x, y);
-            uf.printRootAndSizeOfLastUnion();
+            uf.printLastUnionRootAndSize();
         } else {
             u.union(x, y);
-            u.printRootAndSizeOfLastUnion();
+            u.printLastUnionRootAndSize();
         }
     }
 
     private void find(String[] tokens) {
         Integer x = Integer.valueOf(tokens[1]);
         if (mazeCreated) {
-            UnionFind uf = m.getUnionFindStructure();
+            UnionFind uf = m.getUnionFind();
             System.out.println(uf.find(x));
         } else
             System.out.println(u.find(x));
@@ -395,14 +394,14 @@ public class WIBUP3 {
 
     private void printSets() {
         if (mazeCreated)
-            m.getUnionFindStructure().printSets();
+            m.getUnionFind().printSets();
         else
             u.printSets();
     }
 
     private void printStats() {
         if (mazeCreated)
-            m.getUnionFindStructure().printStats();
+            m.getUnionFind().printStats();
         else
             u.printStats();
     }
