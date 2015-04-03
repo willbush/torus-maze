@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -104,24 +105,14 @@ class TorusMaze {
     private final int maxWeight;
 
     TorusMaze(int power, int maxWeight) {
-        if (isInRange(power) && maxWeight > 0) {
-            powerOf2 = (int) Math.pow(2, power);
-            this.maxWeight = maxWeight;
+        powerOf2 = (int) Math.pow(2, power);
+        this.maxWeight = maxWeight;
 
-            numOfNodes = powerOf2 * powerOf2;
-            adjacencyMatrix = new int[numOfNodes][numOfNodes];
-            u = new UnionFind(numOfNodes);
-            constructMaze();
-        } else {
-            String message = "Power must be in range [1, 6] and max weight must be positive.";
-            throw new IllegalArgumentException(message);
-        }
+        numOfNodes = powerOf2 * powerOf2;
+        adjacencyMatrix = new int[numOfNodes][numOfNodes];
+        u = new UnionFind(numOfNodes);
+        constructMaze();
     }
-
-    private boolean isInRange(int power) {
-        return power > 0 && power < 7;
-    }
-
 
     private enum Direction {
         UP, DOWN, LEFT, RIGHT;
@@ -249,7 +240,7 @@ class TorusMaze {
       If there are n nodes, then the loop will take n*n/2 - n interations.
      */
     public void printMazeData() {
-        final int maxNeighborsWithHigherKey = 3;
+        final int maxNeighborsWithHigherKey = 4;
         int[] higherKeyNeighbors;
         int[] neighborWeights;
 
@@ -289,22 +280,6 @@ class TorusMaze {
 
         } else
             System.out.println(0);
-    }
-
-    public void printRawMazeData() {
-        for (int row = 0; row < numOfNodes; row++) {
-            alignLeft(row);
-            for (int col = row + 1; col < numOfNodes; col++) {
-                System.out.print(adjacencyMatrix[row][col]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-    }
-
-    private void alignLeft(int row) {
-        for (int i = row; i > 0; i--)
-            System.out.print("  ");
     }
 
     public UnionFind getUnionFind() {

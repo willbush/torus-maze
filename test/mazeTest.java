@@ -10,16 +10,10 @@ import static junit.framework.Assert.assertEquals;
 public class mazeTest {
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    @Test(expected = IllegalArgumentException.class)
-    public void illegalPowerThrowsException() {
-        TorusMaze m = new TorusMaze(7, 2);
-    }
-
     @Test
     public void testMazeData() {
-        TorusMaze m = new TorusMaze(3, 1);
+        TorusMaze m = new TorusMaze(2, 5);
         m.printMazeData();
-        m.printRawMazeData();
     }
 
     @Test
