@@ -1,4 +1,3 @@
-import java.math.BigInteger;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -98,7 +97,11 @@ class UnionFind {
 }
 
 class TorusMaze {
-    private int[][] adjacencyMatrix; // to keep track of undirected edges
+    /*
+    The adjacency matrix keeps track of the undirected edges in the upper right section.
+    The main diagonal of the matrix has the number of neighbors present on the row.
+     */
+    private int[][] adjacencyMatrix;
     private UnionFind u;
     private final int numOfNodes;
     private final int powerOf2;
@@ -107,10 +110,10 @@ class TorusMaze {
     TorusMaze(int power, int maxWeight) {
         powerOf2 = (int) Math.pow(2, power);
         this.maxWeight = maxWeight;
-
         numOfNodes = powerOf2 * powerOf2;
         adjacencyMatrix = new int[numOfNodes][numOfNodes];
         u = new UnionFind(numOfNodes);
+
         constructMaze();
     }
 
@@ -227,17 +230,19 @@ class TorusMaze {
         Random r = new Random();
         int weight = r.nextInt(maxWeight) + 1; // on interval [1, maxWeight]
 
-        if (x < y)
+        if (x < y) {
             adjacencyMatrix[x][y] = weight;
-        else
+            adjacencyMatrix[x][x]++; // increment neighbor count on the main diagonal
+        } else {
             adjacencyMatrix[y][x] = weight;
+            adjacencyMatrix[y][y]++;
+        }
     }
 
     /*
       Note col = row + 1 in inner loop causes only the upper right half of
       the matrix to be looped over (excluding the main diagonal)
       since only that data is used for undirected weighted edges.
-      If there are n nodes, then the loop will take n*n/2 - n interations.
      */
     public void printMazeData() {
         final int maxNeighborsWithHigherKey = 4;
@@ -246,6 +251,11 @@ class TorusMaze {
 
         int neighborCount;
         for (int row = 0; row < numOfNodes; row++) {
+            if (hasNoNeighbors(row)) {
+                System.out.println(0);
+                continue;
+            }
+
             neighborCount = 0;
             higherKeyNeighbors = new int[maxNeighborsWithHigherKey];
             neighborWeights = new int[maxNeighborsWithHigherKey];
@@ -259,6 +269,10 @@ class TorusMaze {
             }
             printRow(neighborCount, higherKeyNeighbors, neighborWeights);
         }
+    }
+
+    private boolean hasNoNeighbors(int row) {
+        return adjacencyMatrix[row][row] == 0;
     }
 
     private void printRow(int neighborCount, int[] neighbors, int[] weights) {
@@ -278,8 +292,7 @@ class TorusMaze {
             String outputString = neighborString.toString() + weightString.toString();
             System.out.println(outputString);
 
-        } else
-            System.out.println(0);
+        }
     }
 
     public UnionFind getUnionFind() {
