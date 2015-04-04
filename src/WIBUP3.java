@@ -245,7 +245,7 @@ class TorusMaze {
       since only that data is used for undirected weighted edges.
      */
     public void printMazeData() {
-        final int maxNeighborsWithHigherKey = 4;
+        final int maxNeighbors = 4;
         int[] higherKeyNeighbors;
         int[] neighborWeights;
 
@@ -257,8 +257,8 @@ class TorusMaze {
             }
 
             neighborCount = 0;
-            higherKeyNeighbors = new int[maxNeighborsWithHigherKey];
-            neighborWeights = new int[maxNeighborsWithHigherKey];
+            higherKeyNeighbors = new int[maxNeighbors];
+            neighborWeights = new int[maxNeighbors];
 
             for (int col = row + 1; col < numOfNodes; col++) {
                 if (adjacencyMatrix[row][col] > 0) {
